@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Keystroke Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" media="screen">
+    <link rel="stylesheet" href="stylesheets/main.css">
+  </head>
+  <body>
+    <div class="header">
+      <h1>Keystroke Tracker</h1>
+    </div>
+
+    <div class="username-field">
+      <div class="row">
+        <span class="col-sm-3"></span>
+        <span class="col-sm-6">
+          <div class="form-group">
+            <label for="">Username: </label>
+            <input type="text" class="form-control" id="username" placeholder="Please Type Your Name Here">
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <div class="instruction">
+      <div class="row">
+        <span class="col-sm-3"></span>
+        <span class="col-sm-6"><label for="">Sample Text:</label></span>
+        <span class="col-sm-3"></span>
+      </div>
+      <div class="row">
+        <span class="col-sm-3"></span>
+        <span class="col-sm-6">
+          <p style="text-align: center;" id="sample-text">Stanford University</p>
+        </span>
+        <span class="col-sm-3"></span>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-sm-3"></span>
+      <span class="col-sm-6">
+        <div class="form-group">
+          <label for="">Your Input: </label>
+          <input type="text" class="form-control" id="input-text" placeholder="Type Here">
+        </div>
+      </span>
+    </div>
+
+    <div class="row" style="margin-bottom: 30px;">
+      <span class="col-sm-3"></span>
+      <span class="col-sm-6"><b>Number: </b><span id="number-type">0</span></span>
+    </div>
+
+    <button type="button" name="button" class="btn btn-primary" id="save">Save</button>
+  </body>
+
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+  <script src="scripts/saveas.js"></script>
+  <script type="text/javascript">
+    var input = document.getElementById("input-text");
+    var sampleText = document.getElementById("sample-text").innerHTML;
+    var numberType = document.getElementById("number-type");
+    var save = document.getElementById("save");
+    var user = document.getElementById("username");
+    var keypressTracker = [];
+    var keyupTracker = [];
+
+    var handler = function (e) {
+        if (e.keyCode == 13 && input.value == sampleText){
+          document.getElementById("input-text").value = "";
+          numberType.innerHTML = parseInt(numberType.innerHTML, 10) + 1;
+        }
+
+        if (e.type == "keypress") {
+          keypressTracker.push({
+            key: e.key,
+            timestamp: e.timeStamp,
+            date: Date.now()
+          })
+        } else if (e.type == "keyup") {
+          keyupTracker.push({
+            key: e.key,
+            timestamp: e.timeStamp,
+            date: Date.now()
+          })
+        }
+
+    }
+
+
+    input.addEventListener("keyup",    handler);
+    input.addEventListener("keypress", handler);
+
+    input.onpaste = function(e) {
+       e.preventDefault();
+    }
+
+    function makeid() {
+      var text = "";
+      var possible = "0123456789";
+
+      for (var i = 0; i < 5; i++)
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+    }
+
+    var saveData = ( function () {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+      return function (data, fileName) {
+          var json = JSON.stringify(data),
+              blob = new Blob([json], {type: "octet/stream"}),
+              url = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = fileName;
+          a.click();
+          window.URL.revokeObjectURL(url);
+      };
+    }());
+
+    $("#save").click( function() {
+
+      var random = makeid();
+      var filename1 = username.value + "-keyup-" + random + ".json";
+      saveData(keyupTracker, filename1);
+
+      var filename2 = username.value + "-keypress-" + random + ".json";
+      saveData(keypressTracker, filename2);
+
+      window.location.replace("index.html");
+    });
+
+
+  </script>
+</html>
