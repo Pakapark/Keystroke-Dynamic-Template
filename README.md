@@ -14,9 +14,9 @@ This file asks the participant to fill in the username and type the word shown i
 
 ### Images
 
-![alt text](./consent-form.png)
-![alt text](./data-entry.png)
+![alt text](./image.png) 
 
 ### Implementation Time
 
 1 hour
+
