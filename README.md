@@ -16,7 +16,3 @@ This file asks the participant to fill in the username and type the word shown i
 
 ![alt text](./image.png) 
 
-### Implementation Time
-
-1 hour
-
